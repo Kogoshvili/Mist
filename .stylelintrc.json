@@ -1,0 +1,10 @@
+{
+    "extends": "stylelint-config-standard-scss",
+    "rules": {
+        "indentation": 4,
+        "number-leading-zero": "never",
+        "declaration-empty-line-before": "never",
+        "color-hex-case": "upper",
+        "color-hex-length": "long"
+    }
+}

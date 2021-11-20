@@ -1,0 +1,19 @@
+{
+    "name": "vitra/vitra",
+    "type": "project",
+    "description": "Framework",
+    "keywords": ["framework", "vitra"],
+    "license": "",
+    "autoload": {
+        "psr-4": {
+            "Vitra\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Andrian Kogoshvili",
+            "email": "andriankogoshvili@gmail.com"
+        }
+    ],
+    "require": {}
+}
