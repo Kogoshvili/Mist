@@ -6,8 +6,5 @@ use Mist\Core\Request;
 
 abstract class Middleware
 {
-    public function handle(Request $request, $next)
-    {
-        return $next($request);
-    }
+    abstract public function handle(Request $request);
 }

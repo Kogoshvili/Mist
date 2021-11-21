@@ -24,12 +24,12 @@ abstract class Model
      *
      * @return array
      */
-    public function all()
+    public function all($limit = 50, $offset = 0)
     {
-        $query = "SELECT * FROM $this->table";
+        $query = "SELECT * FROM $this->table LIMIT $limit OFFSET $offset";
         $stmt = $this->db->prepare($query);
         $stmt->execute();
-        return $stmt->fetchAll();
+        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
 
 
@@ -45,7 +45,7 @@ abstract class Model
         $query = "SELECT * FROM $this->table WHERE id = :id";
         $stmt = $this->db->prepare($query);
         $stmt->execute(['id' => $id]);
-        $this->data = $stmt->fetch();
+        $this->data = $stmt->fetch(\PDO::FETCH_ASSOC);
         return $this;
     }
 }

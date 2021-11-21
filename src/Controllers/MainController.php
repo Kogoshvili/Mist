@@ -28,4 +28,16 @@ class MainController extends Controller
         $posts = $posts->all();
         $this->json($posts);
     }
+
+    /**
+     * Get post
+     *
+     * @return void
+     */
+    public function getPost($id)
+    {
+        $posts = Core::get(Post::class);
+        $posts = $posts->get($id);
+        $this->json($posts);
+    }
 }

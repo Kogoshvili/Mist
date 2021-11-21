@@ -46,7 +46,7 @@ class Request
      */
     public $rawRequest;
 
-    function __construct()
+    public function __construct()
     {
         $this->method = $_SERVER['REQUEST_METHOD'];
         $this->uri = $_SERVER['REQUEST_URI'];

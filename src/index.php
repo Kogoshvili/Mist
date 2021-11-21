@@ -8,4 +8,6 @@ define('CONFIG', __DIR__ . './../src/config' . DIRECTORY_SEPARATOR);
 
 $core = new Mist\Core\Core();
 
-require_once 'Core/Gateway.php';
+require_once 'Helpers/globals.php';
+
+require_once 'Core/gateway.php';

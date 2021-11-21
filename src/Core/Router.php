@@ -49,11 +49,17 @@ class Router
      */
     protected static function init($route, $callback)
     {
-        $url = explode('/', preg_replace('/^(\/api).*$/i', '', $_SERVER['REQUEST_URI']));
+        preg_match_all('/(?<=\/).+?(?=\/|$)/', $_SERVER['REQUEST_URI'], $requestArray);
+        if (preg_match('/api/i', $requestArray[0][0])) {
+            array_shift($requestArray[0]);
+        }
 
-        if ($url[0] === $route) {
+        preg_match_all('/(?<=\/).+?(?=\/|$)/', $route, $routeArray);
+
+        if ($requestArray[0][0] === $routeArray[0][0]) {
+            array_shift($requestArray[0]);
             if (gettype($callback) === 'array') {
-                Core::call($callback[0], $callback[1]);
+                Core::call($callback[0], $callback[1], $requestArray[0]);
             } else {
                 $callback();
             }

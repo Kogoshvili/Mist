@@ -128,7 +128,7 @@ class Container
                 if ($parameter->isDefaultValueAvailable()) {
                     $dependencies[] = $parameter->getDefaultValue();
                 } else {
-                    throw new \Exception("Can not resolve class dependency {$parameter->name}");
+                    continue;
                 }
             } else {
                 $dependencies[] = $this->get($dependency->name);
