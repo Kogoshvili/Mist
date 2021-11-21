@@ -13,7 +13,7 @@ class Router
      * Checks route and executes callable GET
      *
      * @param string $route route
-     * @param callable $function callback function
+     * @param callable $callback callback function
      *
      * @return void
      */
@@ -28,7 +28,7 @@ class Router
      * Checks route and executes callable POST
      *
      * @param string $route route
-     * @param callable $function callback function
+     * @param callable $callback callback function
      *
      * @return void
      */
@@ -43,26 +43,45 @@ class Router
      * Checks route and executes callable
      *
      * @param string $route route
-     * @param callable $function callback function
+     * @param callable $callback callback function
      *
      * @return void
      */
     protected static function init($route, $callback)
     {
-        preg_match_all('/(?<=\/).+?(?=\/|$)/', $_SERVER['REQUEST_URI'], $requestArray);
-        if (preg_match('/api/i', $requestArray[0][0])) {
-            array_shift($requestArray[0]);
-        }
+        $requestArray = self::_brakeDownUrl($_SERVER['REQUEST_URI']);
+        $routeArray = self::_brakeDownUrl($route);
 
-        preg_match_all('/(?<=\/).+?(?=\/|$)/', $route, $routeArray);
-
-        if ($requestArray[0][0] === $routeArray[0][0]) {
-            array_shift($requestArray[0]);
-            if (gettype($callback) === 'array') {
-                Core::call($callback[0], $callback[1], $requestArray[0]);
-            } else {
-                $callback();
+        if ($requestArray[0] === $routeArray[0]) {
+            array_shift($requestArray);
+            array_shift($routeArray);
+            if (count($requestArray) === count($routeArray)) {
+                if (gettype($callback) === 'array') {
+                    app()->call($callback[0], $callback[1], [...$requestArray]);
+                } else {
+                    $callback(...$requestArray);
+                }
             }
         }
+    }
+
+    /**
+     * Breakdown url into parts
+     *
+     * @param string $url url
+     *
+     * @return array
+     */
+    private static function _brakeDownUrl($url)
+    {
+        preg_match_all('/(?<=\/).+?(?=\/|$)/', $url, $result);
+
+        if (!empty($result[0][0])) {
+            if (preg_match('/api/i', $result[0][0])) {
+                array_shift($result[0]);
+            }
+        }
+
+        return $result[0] ?: [''];
     }
 }

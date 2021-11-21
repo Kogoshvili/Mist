@@ -14,7 +14,8 @@ abstract class Controller
      */
     protected static function view($view, $data = [])
     {
-        include_once VIEWS . $view . '.phtml';
+        $view =  VIEWS . $view . '.phtml';
+        include_once VIEWS . 'layout.phtml';
         exit;
     }
 

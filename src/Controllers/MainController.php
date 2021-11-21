@@ -2,7 +2,6 @@
 
 namespace Mist\Controllers;
 
-use Mist\Core\Core;
 use Mist\Models\Post;
 
 class MainController extends Controller
@@ -24,7 +23,7 @@ class MainController extends Controller
      */
     public function Api()
     {
-        $posts = Core::get(Post::class);
+        $posts = app()->get(Post::class);
         $posts = $posts->all();
         $this->json($posts);
     }
@@ -36,7 +35,7 @@ class MainController extends Controller
      */
     public function getPost($id)
     {
-        $posts = Core::get(Post::class);
+        $posts = app()->get(Post::class);
         $posts = $posts->get($id);
         $this->json($posts);
     }

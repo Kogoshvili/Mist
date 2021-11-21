@@ -4,16 +4,42 @@ namespace Mist\Core;
 
 class Container
 {
+    /**
+     * The container's instance.
+     *
+     * @var static
+     */
+    protected static $instance;
+
+    /**
+     * Array of initialized singletons.
+     *
+     * @var array
+     */
+    protected static $singletons = [];
+
+    /**
+     * Binds of interfaces and concrete classes.
+     *
+     * @var array
+     */
     protected $binds = [];
-    protected $singletons = [];
-    protected $instances = [];
-    // registry?
 
     public function __construct()
     {
         $config = include_once CONFIG . 'container.php';
         $this->binds = $config['binds'];
-        $this->singletons = $config['singletons'];
+        self::$singletons = $config['singletons'];
+        self::$instance = $this;
+    }
+
+    public static function instance()
+    {
+        if (is_null(static::$instance)) {
+            static::$instance = new static();
+        }
+
+        return static::$instance;
     }
 
     /**
@@ -26,11 +52,24 @@ class Container
      */
     public function bind($class, $interface = null)
     {
-        $this->binds[$interface ?? $class] ??= $class;
+        $this->binds[$interface ?? $class] = $class;
     }
 
     /**
-     * Get class instance
+     * Make new instance
+     *
+     * @param string $class class name
+     *
+     * @return mixed
+     */
+    public function make($class)
+    {
+        $this->bind($class);
+        return $this->resolve($class);
+    }
+
+    /**
+     * Get instance is exists or create new
      *
      * @param string $class class name
      *
@@ -38,12 +77,11 @@ class Container
      */
     public function get($class)
     {
-        if (in_array($class, $this->singletons)) {
+        if (in_array($class, self::$singletons)) {
             return $this->singleton($class);
         }
 
-        $this->bind($class);
-        return $this->resolve($class);
+        return $this->make($class);
     }
 
     /**
@@ -56,7 +94,7 @@ class Container
     public function singleton($class)
     {
         $this->bind($class);
-        return $this->singletons[$class] ??= $this->resolve($class);
+        return self::$singletons[$class] ??= $this->resolve($class);
     }
 
     /**
@@ -128,6 +166,7 @@ class Container
                 if ($parameter->isDefaultValueAvailable()) {
                     $dependencies[] = $parameter->getDefaultValue();
                 } else {
+                    //throw new \Exception("Can not resolve class dependency {$parameter->name}");
                     continue;
                 }
             } else {
