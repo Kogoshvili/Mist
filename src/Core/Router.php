@@ -1,9 +1,14 @@
 <?php
 
-namespace Vitra\Core;
+namespace Mist\Core;
 
 class Router
 {
+    private static $routes = [
+        'GET' => [],
+        'POST' => []
+    ];
+
     /**
      * Checks route and executes callable GET
      *
@@ -12,10 +17,11 @@ class Router
      *
      * @return void
      */
-    public static function get($route, $function)
+    public static function get($route, $callback)
     {
         if ($_SERVER['REQUEST_METHOD'] !== 'GET') return;
-        self::init($route, $function);
+        self::$routes['GET'][$route] = $callback;
+        self::init($route, $callback);
     }
 
     /**
@@ -26,10 +32,11 @@ class Router
      *
      * @return void
      */
-    public static function post($route, $function)
+    public static function post($route, $callback)
     {
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') return;
-        self::init($route, $function);
+        self::$routes['POST'][$route] = $callback;
+        self::init($route, $callback);
     }
 
     /**
@@ -40,12 +47,16 @@ class Router
      *
      * @return void
      */
-    protected static function init($route, $function)
+    protected static function init($route, $callback)
     {
-        $url = explode('/', $_SERVER['REQUEST_URI']);
+        $url = explode('/', preg_replace('/^(\/api).*$/i', '', $_SERVER['REQUEST_URI']));
 
-        if ($url[1] === $route) {
-            $function();
+        if ($url[0] === $route) {
+            if (gettype($callback) === 'array') {
+                Core::call($callback[0], $callback[1]);
+            } else {
+                $callback();
+            }
         }
     }
 }

@@ -1,18 +1,25 @@
 <?php
 
-namespace Vitra\Core;
+namespace Mist\Core;
 
 class Core
 {
-    protected $container;
+    public $container;
 
-    public function __construct(Container $container)
+    public function __construct()
     {
-        $this->container = $container;
+        $this->container = new Container();
     }
 
-    public function get($class)
+    public function __call($name, $arguments)
     {
-        return $this->container->get($class);
+        if (method_exists($this->container, $name)) {
+            return call_user_func_array([$this->container, $name], $arguments);
+        }
+    }
+
+    public function __callStatic($name, $arguments)
+    {
+        return $GLOBALS['core']->$name(...$arguments);
     }
 }

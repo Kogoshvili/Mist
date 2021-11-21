@@ -1,21 +1,32 @@
 <?php
 
-namespace Vitra\Core;
+namespace Mist\Core;
 
 class Container
 {
+    protected $binds = [];
+    protected $singletons = [];
     protected $instances = [];
+    // registry?
+
+    public function __construct()
+    {
+        $config = require_once CONFIG . 'container.php';
+        $this->binds = $config['binds'];
+        $this->singletons = $config['singletons'];
+    }
 
     /**
      * Add class to instance
      *
      * @param string $class class name
+     * @param string $interface interface name
      *
      * @return void
      */
-    public function set($class)
+    public function bind($class, $interface = null)
     {
-        $this->instances[$class] = $class;
+        $this->binds[$interface ?? $class] ??= $class;
     }
 
     /**
@@ -27,11 +38,46 @@ class Container
      */
     public function get($class)
     {
-        if (!isset($this->instances[$class])) {
-            $this->set($class);
+        if (in_array($class, $this->singletons)) {
+            return $this->singleton($class);
         }
 
-        return $this->resolve($this->instances[$class]);
+        $this->bind($class);
+        return $this->resolve($class);
+    }
+
+    /**
+     * Get singleton instance
+     *
+     * @param string $class class name
+     *
+     * @return mixed
+     */
+    public function singleton($class)
+    {
+        $this->bind($class);
+        return $this->singletons[$class] ??= $this->resolve($class);
+    }
+
+    /**
+     * Call method and resolve its dependencies
+     *
+     * @param string $class class name
+     * @param string $method method name
+     *
+     * @return mixed
+     */
+    public function call($class, $method)
+    {
+        $reflector = new \ReflectionMethod($class, $method);
+        $parameters = $reflector->getParameters();
+
+        if ($parameters) {
+            $dependencies = $this->getDependencies($parameters);
+            return $class::{$method}(...$dependencies);
+        }
+
+        return $class::{$method}();
     }
 
     /**

@@ -1,12 +1,12 @@
 {
-    "name": "vitra/vitra",
+    "name": "mist/mist",
     "type": "project",
-    "description": "Framework",
-    "keywords": ["framework", "vitra"],
+    "description": "",
+    "keywords": ["framework", "mist"],
     "license": "",
     "autoload": {
         "psr-4": {
-            "Vitra\\": "src/"
+            "Mist\\": "src/"
         }
     },
     "authors": [

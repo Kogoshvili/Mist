@@ -1,6 +1,6 @@
 <?php
 
-namespace Vitra\Core;
+namespace Mist\Core;
 
 class Database extends \PDO
 {

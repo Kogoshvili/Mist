@@ -1,8 +1,8 @@
 <?php
 
-namespace Vitra\Controllers;
+namespace Mist\Controllers;
 
-abstract class BaseController
+abstract class Controller
 {
     /**
      * View
@@ -27,6 +27,20 @@ abstract class BaseController
     protected static function redirect($route)
     {
         header("location: {$route}");
+        exit;
+    }
+
+    /**
+     * Return Json
+     *
+     * @param mixed $data data
+     *
+     * @return void
+     */
+    protected static function json($data)
+    {
+        header('Content-Type: application/json');
+        echo json_encode($data);
         exit;
     }
 }
