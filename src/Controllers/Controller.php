@@ -15,6 +15,7 @@ abstract class Controller
     protected static function view($view, $data = [])
     {
         include_once VIEWS . $view . '.phtml';
+        exit;
     }
 
     /**
@@ -28,6 +29,19 @@ abstract class Controller
     {
         header("location: {$route}");
         exit;
+    }
+
+    /**
+     * Set Response Code
+     *
+     * @param int $code http response code default is 200
+     *
+     * @return Controller
+     */
+    protected function response($code = 200)
+    {
+        http_response_code($code);
+        return $this;
     }
 
     /**

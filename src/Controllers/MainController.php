@@ -2,7 +2,8 @@
 
 namespace Mist\Controllers;
 
-use Mist\Core\Request;
+use Mist\Core\Core;
+use Mist\Models\Post;
 
 class MainController extends Controller
 {
@@ -13,16 +14,18 @@ class MainController extends Controller
      */
     public function Home()
     {
-        self::view('home');
+        $this->view('home');
     }
 
     /**
-     * Home page
+     * Home Api
      *
      * @return void
      */
     public function Api()
     {
-        self::json(['message' => 'Hello World!']);
+        $posts = Core::get(Post::class);
+        $posts = $posts->all();
+        $this->json($posts);
     }
 }

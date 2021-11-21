@@ -1,0 +1,12 @@
+version: '3.1'
+
+services:
+  mysql:
+    image: mysql
+    container_name: mist_mysql
+    restart: on-failure:5
+    env_file:
+      - .env
+    ports:
+      - 3307:3306
+

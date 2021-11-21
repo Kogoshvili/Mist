@@ -11,7 +11,7 @@ class Container
 
     public function __construct()
     {
-        $config = require_once CONFIG . 'container.php';
+        $config = include_once CONFIG . 'container.php';
         $this->binds = $config['binds'];
         $this->singletons = $config['singletons'];
     }
@@ -19,7 +19,7 @@ class Container
     /**
      * Add class to instance
      *
-     * @param string $class class name
+     * @param string $class     class name
      * @param string $interface interface name
      *
      * @return void
@@ -62,22 +62,24 @@ class Container
     /**
      * Call method and resolve its dependencies
      *
-     * @param string $class class name
+     * @param string $class  class name
      * @param string $method method name
+     * @param array  $args   method arguments
      *
      * @return mixed
      */
-    public function call($class, $method)
+    public function call($class, $method, $args = [])
     {
         $reflector = new \ReflectionMethod($class, $method);
         $parameters = $reflector->getParameters();
+        $classInstance = $this->get($class);
 
         if ($parameters) {
             $dependencies = $this->getDependencies($parameters);
-            return $class::{$method}(...$dependencies);
+            return $classInstance->$method(...$dependencies, ...$args);
         }
 
-        return $class::{$method}();
+        return $classInstance->$method(...$args);
     }
 
     /**

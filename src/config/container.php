@@ -7,5 +7,6 @@ return [
     'singletons' => [
         'Mist\Core\Container',
         'Mist\Core\Request',
+        'Mist\Core\Database'
     ]
 ];

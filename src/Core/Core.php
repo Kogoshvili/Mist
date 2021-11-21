@@ -18,7 +18,7 @@ class Core
         }
     }
 
-    public function __callStatic($name, $arguments)
+    public static function __callStatic($name, $arguments)
     {
         return $GLOBALS['core']->$name(...$arguments);
     }
