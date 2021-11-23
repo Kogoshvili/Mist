@@ -1,13 +1,9 @@
 <?php
 
 use Mist\Core\Router;
-use Mist\Controllers\MainController;
+use Mist\Controllers\{MainController, UserController};
 
-Router::get('/', [MainController::class, 'Api']);
 Router::get('/posts/{id}', [MainController::class, 'getPost']);
-Router::get(
-    '/test/{id}',
-    function ($id) {
-        echo $id;
-    }
-);
+Router::post('/user/login', [UserController::class, 'login']);
+Router::post('/user/register', [UserController::class, 'register']);
+

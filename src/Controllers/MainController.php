@@ -17,18 +17,6 @@ class MainController extends Controller
     }
 
     /**
-     * Home Api
-     *
-     * @return void
-     */
-    public function Api()
-    {
-        $posts = app()->get(Post::class);
-        $posts = $posts->all();
-        $this->json($posts);
-    }
-
-    /**
      * Get post
      *
      * @return void

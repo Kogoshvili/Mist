@@ -51,13 +51,20 @@ class Router
     {
         $request = app()->get(Request::class);
         $routeArray = $request->brakeDownUrl($route);
+        $requestLength = count($request->route);
+        $routeLength = count($routeArray['route']);
 
-        if ($request->route === $routeArray[0]) {
-            $routeArray = array_slice($routeArray, 1);
+        if ($requestLength === $routeLength) {
+            $matches = 0;
+            foreach ($request->route as $key => $value) {
+                if ($routeArray['route'][$key] == $value) {
+                    $matches++;
+                }
+            }
 
-            if (count($request->rawParams) === count($routeArray)) {
-                foreach ($routeArray as $index => $key) {
-                    $request->params[substr($key, 1, -1)] = $request->rawParams[$index];
+            if ($matches + count($routeArray['params']) === $requestLength) {
+                foreach ($routeArray['params'] as $index => $key) {
+                    $request->params[substr($key, 1, -1)] = $request->route[$matches + $index];
                 }
 
                 if (gettype($callback) === 'array') {

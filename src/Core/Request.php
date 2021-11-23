@@ -51,16 +51,68 @@ class Request
      *
      * @var bool
      */
-    public $isApiRequest = false;
+    public $isApi = false;
+
+    /**
+     * Query
+     *
+     * @var array
+     */
+    public $query = [];
+
+    /**
+     * Json Body
+     *
+     * @var array
+     */
+    public $json;
+
+    /**
+     * Get Body
+     *
+     * @var array
+     */
+    public $get;
+
+    /**
+     * Post Body
+     *
+     * @var array
+     */
+    public $post;
 
     public function __construct()
     {
         $this->method = $_SERVER['REQUEST_METHOD'];
         $this->uri = $_SERVER['REQUEST_URI'];
         $this->rawRequest = $_REQUEST;
-        $requestArray = $this->brakeDownUrl($this->uri, $this->isApiRequest);
-        $this->route = $requestArray[0];
-        $this->rawParams = array_slice($requestArray, 1);
+
+        $this->json = json_decode(file_get_contents('php://input'), true);
+        $this->get = $_GET;
+        $this->post = $_POST;
+
+        $request = $this->brakeDownUrl($this->uri);
+        $this->isApi = $request['isApi'];
+        $this->route = $request['route'];
+        $this->rawParams = $request['params'];
+        $this->query = $request['query'];
+    }
+
+    public function __get($name)
+    {
+        if (isset($this->json[$name])) {
+            return $this->json[$name];
+        }
+
+        if (isset($this->get[$name])) {
+            return $this->get[$name];
+        }
+
+        if (isset($this->post[$name])) {
+            return $this->post[$name];
+        }
+
+        return null;
     }
 
     /**
@@ -70,17 +122,29 @@ class Request
      *
      * @return array
      */
-    public function brakeDownUrl($url, &$apiFlag = null)
+    public function brakeDownUrl($url)
     {
-        preg_match_all('/(?<=\/).+?(?=\/|$)/', $url, $result);
+        $result = [
+            'isApi' => false,
+            'route' => [],
+            'params' => [],
+            'query' => ''
+        ];
 
-        if (!empty($result[0][0])) {
-            if (preg_match('/api/i', $result[0][0])) {
-                $apiFlag = true;
-                array_shift($result[0]);
-            }
+        preg_match_all('/(?<=\/).+?(?=\/|$)/', $url, $result['route']);
+        $result['route'] = $result['route'][0] ?? [];
+
+        preg_match_all('/{.+?}/', $url, $result['params']);
+        $result['params'] = $result['params'][0] ?? [];
+
+        preg_match_all('/\?.+/', $url, $result['query']);
+        $result['query'] = $result['query'][0] ?? '';
+
+        if (array_key_exists(0, $result['route']) && $result['route'][0] === 'api') {
+            $result['isApi'] = true;
+            $result['route'] = array_slice($result['route'], 1);
         }
 
-        return $result[0] ?: [''];
+        return $result;
     }
 }

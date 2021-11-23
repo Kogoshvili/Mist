@@ -42,4 +42,5 @@
 	- middlewares.php - config file for middlewares
 
 **Todos:**
+ - JWT
  - Observers?
