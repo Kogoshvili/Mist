@@ -40,7 +40,3 @@
 	- container.php - config file for container
 	- database.php - config file for database connection
 	- middlewares.php - config file for middlewares
-
-**Todos:**
- - JWT
- - Observers?

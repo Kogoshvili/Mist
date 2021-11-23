@@ -14,7 +14,7 @@ abstract class Model implements \JsonSerializable
     protected $table;
 
     /**
-     * list of columns to hide from response
+     * list of properties to hide after serialization
      *
      * @var array
      */

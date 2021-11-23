@@ -96,6 +96,10 @@ class Request
         $this->route = $request['route'];
         $this->rawParams = $request['params'];
         $this->query = $request['query'];
+
+        if ($_SERVER["HTTP_AUTHORIZATION"]) {
+            $this->token = str_replace('Bearer ', '', $_SERVER["HTTP_AUTHORIZATION"]);
+        }
     }
 
     public function __get($name)
