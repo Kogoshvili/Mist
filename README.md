@@ -1,8 +1,13 @@
 ## Mist
 
 **Custom PHP Framework**
-- 0 dependencies
-- 99% original code
+- 0 Composer Packages Dependencies
+- API & Views Support
+- Dependency Injection
+- Migrations
+- Middleware
+- JWT Authentication
+- Models: Select, Where, Update & Insert Methods
 
 **Root folder structure:**
 - **/app** - place for frontend framework
@@ -19,7 +24,7 @@
 	- Request.php - request class, constructed from request
 	- Router.php - router class
 - **/Controllers** - folder containing controllers
-   - Controller.php - abstract class containig core functionality for all controllers
+   	- Controller.php - abstract class containig core functionality for all controllers
 - **/Middlewares** - contains all middlewares
 	- Middleware.php - abstract class that should be extended by all middlewares
 - **/Migrations** - contains all migrations scripts
