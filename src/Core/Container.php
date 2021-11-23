@@ -7,16 +7,9 @@ class Container
     /**
      * The container's instance.
      *
-     * @var static
+     * @var \Mist\Core\Container
      */
     protected static $instance;
-
-    /**
-     * Array of initialized singletons.
-     *
-     * @var array
-     */
-    protected static $singletons = [];
 
     /**
      * Binds of interfaces and concrete classes.
@@ -25,11 +18,25 @@ class Container
      */
     protected $binds = [];
 
+    /**
+     * Array of classes that should be singletons
+     *
+     * @var array
+     */
+    protected $singletons = [];
+
+    /**
+     * Array of initialized singletons.
+     *
+     * @var array
+     */
+    protected $singletonRegistry = [];
+
     public function __construct()
     {
         $config = include_once CONFIG . 'container.php';
         $this->binds = $config['binds'];
-        self::$singletons = $config['singletons'];
+        $this->singletons = $config['singletons'];
         self::$instance = $this;
     }
 
@@ -77,7 +84,7 @@ class Container
      */
     public function get($class)
     {
-        if (in_array($class, self::$singletons)) {
+        if (in_array($class, $this->singletons)) {
             return $this->singleton($class);
         }
 
@@ -94,7 +101,7 @@ class Container
     public function singleton($class)
     {
         $this->bind($class);
-        return self::$singletons[$class] ??= $this->resolve($class);
+        return $this->singletonRegistry[$class] ??= $this->resolve($class);
     }
 
     /**
@@ -102,19 +109,19 @@ class Container
      *
      * @param string $class  class name
      * @param string $method method name
-     * @param array  $args   method arguments
+     * @param array  $args   method arguments (key value pairs)
      *
      * @return mixed
      */
     public function call($class, $method, $args = [])
     {
+        $classInstance = $this->get($class);
         $reflector = new \ReflectionMethod($class, $method);
         $parameters = $reflector->getParameters();
-        $classInstance = $this->get($class);
 
         if ($parameters) {
-            $dependencies = $this->getDependencies($parameters);
-            return $classInstance->$method(...$dependencies, ...$args);
+            $dependencies = $this->getDependencies($parameters, $args);
+            return $classInstance->$method(...$dependencies);
         }
 
         return $classInstance->$method(...$args);
@@ -156,21 +163,24 @@ class Container
      *
      * @return array
      */
-    public function getDependencies($parameters)
+    public function getDependencies($parameters, $args = [])
     {
         $dependencies = [];
 
         foreach ($parameters as $parameter) {
-            $dependency = $parameter->getClass();
-            if ($dependency === null) {
-                if ($parameter->isDefaultValueAvailable()) {
-                    $dependencies[] = $parameter->getDefaultValue();
-                } else {
-                    //throw new \Exception("Can not resolve class dependency {$parameter->name}");
-                    continue;
-                }
+            if (array_key_exists($parameter->name, $args)) {
+                $dependencies[] = $args[$parameter->name];
             } else {
-                $dependencies[] = $this->get($dependency->name);
+                $dependency = $parameter->getClass();
+                if ($dependency === null) {
+                    if ($parameter->isDefaultValueAvailable()) {
+                        $dependencies[] = $parameter->getDefaultValue();
+                    } else {
+                        throw new \Exception("Can not resolve class dependency {$parameter->name}");
+                    }
+                } else {
+                    $dependencies[] = $this->get($dependency->name);
+                }
             }
         }
 

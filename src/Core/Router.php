@@ -49,39 +49,23 @@ class Router
      */
     protected static function init($route, $callback)
     {
-        $requestArray = self::_brakeDownUrl($_SERVER['REQUEST_URI']);
-        $routeArray = self::_brakeDownUrl($route);
+        $request = app()->get(Request::class);
+        $routeArray = $request->brakeDownUrl($route);
 
-        if ($requestArray[0] === $routeArray[0]) {
-            array_shift($requestArray);
-            array_shift($routeArray);
-            if (count($requestArray) === count($routeArray)) {
+        if ($request->route === $routeArray[0]) {
+            $routeArray = array_slice($routeArray, 1);
+
+            if (count($request->rawParams) === count($routeArray)) {
+                foreach ($routeArray as $index => $key) {
+                    $request->params[substr($key, 1, -1)] = $request->rawParams[$index];
+                }
+
                 if (gettype($callback) === 'array') {
-                    app()->call($callback[0], $callback[1], [...$requestArray]);
+                    app()->call($callback[0], $callback[1], $request->params);
                 } else {
-                    $callback(...$requestArray);
+                    $callback(...$request->params);
                 }
             }
         }
-    }
-
-    /**
-     * Breakdown url into parts
-     *
-     * @param string $url url
-     *
-     * @return array
-     */
-    private static function _brakeDownUrl($url)
-    {
-        preg_match_all('/(?<=\/).+?(?=\/|$)/', $url, $result);
-
-        if (!empty($result[0][0])) {
-            if (preg_match('/api/i', $result[0][0])) {
-                array_shift($result[0]);
-            }
-        }
-
-        return $result[0] ?: [''];
     }
 }
