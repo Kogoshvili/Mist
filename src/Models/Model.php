@@ -6,7 +6,18 @@ use Mist\Core\Database;
 
 abstract class Model
 {
+    /**
+     * Database instance
+     *
+     * @var Database
+     */
     protected $db;
+
+    /**
+     * Raw data from database
+     *
+     * @var array
+     */
     public $data;
 
     public function __construct(Database $db)
@@ -21,6 +32,9 @@ abstract class Model
 
     /**
      * Get all records from table
+     *
+     * @param int $limit limit default 50
+     * @param int $offset offset default 0
      *
      * @return array
      */

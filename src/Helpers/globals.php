@@ -4,6 +4,8 @@
  * Globally available helper functions
  */
 
-function app() {
+function app()
+{
     return Mist\Core\Core::instance();
 }
+

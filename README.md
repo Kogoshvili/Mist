@@ -11,8 +11,6 @@
 - **/src** - folder containing framework
 
 **Framework structure:**
-- **/Controllers** - folder containing controllers
-   - Controller.php - abstract class containig core functionality for all controllers
 - **/Core** - folder containing core classes for application
 	- Container.php - class used to resolve depencies for classes and methods
 	- Core.php - core framework class extends container
@@ -20,17 +18,21 @@
 	- gateway.php - gateway file determins with list of routes to use for a request and call all neccessary middlewares
 	- Request.php - request class, constructed from request
 	- Router.php - router class
-- **/Helpers** - contains all helper functions/classes
-	- globals.php - contains functions that shoulde be globally available
+- **/Controllers** - folder containing controllers
+   - Controller.php - abstract class containig core functionality for all controllers
 - **/Middlewares** - contains all middlewares
 	- Middleware.php - abstract class that should be extended by all middlewares
 - **/Migrations** - contains all migrations scripts
+	- Migration.php - class for running/managing migrations
 - **/Models** - folder for storing models
 	- Model.php - abstract class containig core functionality for all models
 - **/Repositories** - contains all repositories
 	- Repository.php - abstract class containig core functionality for all repositories
 - **/Services** - folder containig all services
 	- Service.php - abstract class containig core functionality for all services
+- **/Helpers** - contains all helper functions/classes
+	- globals.php - contains functions that shoulde be globally available
+	- array.php - contains helper function for working with arrays
 - **/routes** - folder containig route list
 	- api.php - list of api routes
 	- view.php - list of view/web routes
@@ -40,7 +42,4 @@
 	- middlewares.php - config file for middlewares
 
 **Todos:**
- - Migrations
- - Interfaces
- - DB Adaptors?
  - Observers?

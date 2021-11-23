@@ -4,7 +4,6 @@ return [
     'binds' => [
     ],
     'singletons' => [
-        'Mist\Core\Request',
-        'Mist\Core\Database'
+        'Mist\Core\Request'
     ]
 ];

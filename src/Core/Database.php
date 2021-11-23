@@ -8,7 +8,7 @@ class Database extends \PDO
     {
         $config = include_once CONFIG . 'database.php';
         $string = sprintf(
-            $config['dns'], $config['host'], $config['port'], $config['database']
+            $config['dns'], $config['driver'], $config['host'], $config['port'], $config['database']
         );
         parent::__construct($string, $config['username'], $config['password']);
         parent::setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
