@@ -1,7 +1,7 @@
 ## Mist
 
 **Custom PHP Framework**
-- 0 Composer Packages Dependencies
+- 0 Composer Dependencies
 - API & Views Support
 - Dependency Injection
 - Migrations
