@@ -5,6 +5,10 @@
     "keywords": ["framework", "mist"],
     "license": "",
     "autoload": {
+        "files": [
+            "src/Helpers/array.php",
+            "src/Helpers/globals.php"
+        ],
         "psr-4": {
             "Mist\\": "src/"
         }

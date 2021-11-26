@@ -20,18 +20,10 @@ class Migration
      */
     protected $folder = __DIR__;
 
-    /**
-     * Latest version of a migration
-     *
-     * @var string
-     */
-    protected $version;
-
     public function __construct(Database $db)
     {
         $this->db = $db;
         $this->_createMigrationsTable();
-        $this->version = $this->_getLatestVersion();
     }
 
     /**
@@ -41,7 +33,7 @@ class Migration
      */
     public function migrate()
     {
-        $latest = explode('.', $this->version);
+        $latest = (int)str_replace('.', '', $this->_getLatestVersion());
         $files = array_filter(
             scandir($this->folder),
             fn ($file) => strpos($file, '.sql')
@@ -57,18 +49,10 @@ class Migration
         }
 
         foreach ($migrations as $version => $filename) {
-            $versionArr = explode('.', $version);
-            if ($versionArr !== $latest) {
-                $res = array_every(
-                    fn ($value, $key) => $value >= $latest[$key],
-                    explode('.', $version)
-                );
-
-                if ($res) {
-                    $content = $this->_getMigrationFileContent($filename);
-                    $this->db->exec($content);
-                    $this->_addMigration($filename, $version);
-                }
+            if ((int)str_replace('.', '', $version) > $latest) {
+                $content = file_get_contents($this->folder . DIRECTORY_SEPARATOR . $filename);
+                $this->db->exec($content);
+                $this->_addMigration($filename, $version);
             }
         }
     }
@@ -101,18 +85,6 @@ class Migration
             PRIMARY KEY (`id`)
         )";
         return $this->db->exec($query);
-    }
-
-    /**
-     * Get content of migration script file
-     *
-     * @param string $file file name
-     *
-     * @return string
-     */
-    private function _getMigrationFileContent($file)
-    {
-        return file_get_contents($this->folder . DIRECTORY_SEPARATOR . $file);
     }
 
     /**

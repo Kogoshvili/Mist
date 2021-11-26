@@ -97,7 +97,7 @@ class Request
         $this->rawParams = $request['params'];
         $this->query = $request['query'];
 
-        if ($_SERVER["HTTP_AUTHORIZATION"]) {
+        if (array_key_exists('HTTP_AUTHORIZATION', $_SERVER)) {
             $this->token = str_replace('Bearer ', '', $_SERVER["HTTP_AUTHORIZATION"]);
         }
     }

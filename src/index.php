@@ -6,9 +6,6 @@ define('ROUTES', __DIR__ . '/routes' . DIRECTORY_SEPARATOR);
 define('VIEWS', __DIR__ . '/views' . DIRECTORY_SEPARATOR);
 define('CONFIG', __DIR__ . '/config' . DIRECTORY_SEPARATOR);
 
-require_once 'Helpers/array.php';
-require_once 'Helpers/globals.php';
-
 $core = new Mist\Core\Core();
 $core->get(Mist\Migrations\Migration::class)->migrate();
 
